@@ -39,35 +39,39 @@ void loop() {
   }
 }
 
-void sendNotification() {
-  if (argc < 3) {
-    std::cout << "********* Please enter valid login & api key *********" << std::endl;
-    std::cout << ">> bin/messages_example username C7XDKZOQZo6HvhJPtO0MBcWl3qwtp2" << std::endl;
-    return 1;
-  }
+bool SendSms()
+    // From - the ID or number you are sending from. This is what will appear at the recipient's cellphone. 
+    // CountyCode - the code of the country you are sending the SMS to (for example: 44 is for the UK
+    // To - is the number you are texting to, which should not contain any leading zeros, spaces, commas, etc.
+    // Message - is the message you are sending, which can be any multi lingual text
+    // The status returned would be either a confirmation number along with the text "OK", which means that the message
+    // was delivered, or an error code. 
+{
+    bool result=FALSE;
+    // Account Data goes here:
+    wstring user=L"596TestAcc",pass=L"5eRm9rvNTMVyhP3",request=L"";
+    // Request Data goes here:
+    wstring recipientPhoneNumber=L"18585554321" // e.g. 1-858-555-4321 (change this to your phone number)
+    wstring senderPhoneNumber=L"12036463823" // e.g. 1-203-646-3823 (this should stay static)
+    //
+    request=L"http://sms1.cardboardfish.com:9001/HTTPSMS?S=H&UN=";
+    request+=user;    // user name
+    request+=L"&P=";
+    request+=pass;    // password
+    request+=L"&DA="; 
+    request+=recipientPhoneNumber; // phone number (to)
+    request+=L"&SA="; 
+    request+=senderPhoneNumber; // phone number (from)
+    request+=L"&M=";
+    CString EncodedMessage; // Message
+    
+    CString ccc;
+    // Message to send:
+    EncodedMessage=ConvertHex(Message)+ConvertHex( L"Warning! Motion was detected.");
+    
+    request+=(wstring)EncodedMessage; // Message to send
 
-  std::cout << "********* MessagesController example *********" << std::endl;
-  Rest::RequestData vars;
-  Client tm(argv[1], argv[2]);
-  //******************* Send example ***********************
-  std::cout << "********* MessagesController.send() *********" << std::endl;
-  vars["phones"] = "999";
-  vars["text"] = "The simple fake message";
-  SendResultModel result = tm.Messages().send(vars);
-  if (tm.Messages().isError){
-    std::cout
-      << tm.Messages().lastError.code << " * "
-      << tm.Messages().lastError.message << " * "
-      << std::endl;
-    return 1;
-  } else {
-    std::cout
-       << result.href << " * "
-       << result.type  << " * "
-       << result.messageId  << " * "
-       << std::endl;
-  }
-
-}
+    request+=L"&DC=4";
+    // Indicating that this message is encoded as opposed to plain text  
 
 
